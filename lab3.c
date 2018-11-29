@@ -9,13 +9,15 @@
 #include <sys/shm.h>
 #include <sys/types.h>
 
-#include <semaphore.h>
+#include <semaphore.h>  // compile with flag -pthread
+#include "omp.h"
+
 sem_t mutex;
 
 void print_Matrix(int* const matrix, unsigned num_rows, unsigned num_columns){
     int i = 0;
     for(; i < num_rows*num_columns; i++){
-		if(i != 0 & i%num_columns == 0)
+		if(i != 0 && i%num_columns == 0)
 			printf("\n");
         printf("%i ", matrix[i]);
     }
@@ -32,6 +34,11 @@ void print_Vector(int* const vector, unsigned size){
 }
 
 int** generate_data(unsigned num_rows, unsigned num_columns){
+
+	// printf("sizeof(unsigned) = %LU", sizeof(unsigned));
+	// if( num_rows*num_columns < sizeof(unsigned))
+	// 	printf("All's good!\n");
+
 	int** data = malloc(2*sizeof(int*));
     int* g_matrix = malloc(num_rows*num_columns*sizeof(int));
 	int* g_vector = malloc(num_columns*sizeof(int));
@@ -82,10 +89,9 @@ void init_shared_mem(int* arr, int* data, int size){
 }
 
 int* parallel_calc__rows_by_vector_(int** data, unsigned num_rows, unsigned num_columns, unsigned num_processes){
-	int* res_vector; // = malloc(num_rows*sizeof(int));
-	// printf("rows = %d\n processes = %d\n", num_rows, num_processes);
+	int* res_vector;
 	int scale_ = num_rows/num_processes;
-	// printf("scale = %d\n", scale_);
+	double start = 0, end = 0, diff_time = 0;
 	int *SHARED[3]; //[0] -result_vec, [1]-vector, [2]-matrix
     int sm_0, sm_1, sm_2;
     sm_0 = shmget( IPC_PRIVATE, num_columns*sizeof(int), 0666 | IPC_CREAT | IPC_EXCL ); //result
@@ -96,13 +102,8 @@ int* parallel_calc__rows_by_vector_(int** data, unsigned num_rows, unsigned num_
 	SHARED[2] = (int*)shmat(sm_2, NULL, 0); //martix
 	init_shared_mem(SHARED[1], data[1], num_columns);
 	init_shared_mem(SHARED[2], data[0], num_columns*num_rows);
-	// printf("Matrix : \n");
-	// print_Matrix(SHARED[2], num_rows, num_columns);
-	// print_Vector(SHARED[1], num_rows);
-
-	// printf("\nSHARED : ");
-	// print_Vector(SHARED[0], num_columns);
-
+	
+	start = omp_get_wtime();
 	for(size_t i = 0; i < num_processes; i++){
 		pid_t pid = fork();
 		
@@ -110,35 +111,20 @@ int* parallel_calc__rows_by_vector_(int** data, unsigned num_rows, unsigned num_
 			printf("Process wasn't created");
 		}else if( !pid ){
 			if( i+1 == num_processes ){
-				// printf("begin = %d ", scale_*i);
-				// printf("end = %d ", (i+1)*scale_);
-				// printf("\nbefor : ");
-				// print_Vector(SHARED[0], num_columns);
-
 				mult_rows_by_vector(SHARED, num_columns, scale_*i, num_rows);
-
-				// printf("\nafter : ");
-				// print_Vector(SHARED[0], num_columns);
 			}else{
-				// printf("begin = %d ", scale_*i);
-				// printf("end = %d ", (i+1)*scale_);
-				// printf("\nbefor : ");
-				// print_Vector(SHARED[0], num_columns);
-
 				mult_rows_by_vector(SHARED, num_columns, scale_*i, scale_*(i+1));
-
-				// printf("\nafter : ");
-				// print_Vector(SHARED[0], num_columns);
 			}
 			exit(EXIT_SUCCESS);
 		}
 	}
 	while(wait(NULL)>0){}
-	// print_Vector(SHARED[0], num_columns);
 	res_vector = SHARED[0];
-	// shmctl(sm_0, IPC_RMID, NULL);
+	shmctl(sm_0, IPC_RMID, NULL);
 	shmctl(sm_1, IPC_RMID, NULL);
 	shmctl(sm_2, IPC_RMID, NULL);
+	end = omp_get_wtime();
+	printf("diff time = %.16g\n", end - start);
 	return res_vector;
 }
 
@@ -147,24 +133,26 @@ int* parallel_calc__rows_by_vector_(int** data, unsigned num_rows, unsigned num_
 void multiple_1234(int* vec1, int* vec2, int el, int num_columns, unsigned size){
 	int i = 0;
 	for(; i < size; i++){
-		vec1[i] += *(vec2 + i*num_columns)*el;
+		int a = *(vec2 + i*num_columns)*el;
+		sem_post(&mutex); //increment
+		vec1[i] += a;
+		sem_wait(&mutex); //decrement
 	}
 }
 
 void mult_columns_by_element(int** SHARED, int num_rows, int num_columns, int range_begin, int range_end){
 	int i = range_begin;
-	sem_post(&mutex); //increment
+	
 	for(; i < range_end; i++){
 		multiple_1234(SHARED[0], SHARED[2] +  i, SHARED[1][i], num_columns, num_rows);
 	}
-	sem_wait(&mutex); //decrement
+	
 }
 
 int* parallel_calc__columns_by_element_(int** data, unsigned num_rows, unsigned num_columns, unsigned num_processes){
-	int* res_vector; // = malloc(num_rows*sizeof(int));
-	// printf("rows = %d\n processes = %d\n", num_rows, num_processes);
+	int* res_vector;
+	double start = 0, end = 0, diff_time = 0;
 	int scale_ = num_columns/num_processes;
-	// printf("scale = %d\n", scale_);
 	int *SHARED[3]; //[0] -result_vec, [1]-vector, [2]-matrix
     int sm_0, sm_1, sm_2;
     sm_0 = shmget( IPC_PRIVATE, num_columns*sizeof(int), 0666 | IPC_CREAT | IPC_EXCL ); //result
@@ -177,13 +165,7 @@ int* parallel_calc__columns_by_element_(int** data, unsigned num_rows, unsigned 
 	init_shared_mem(SHARED[2], data[0], num_columns*num_rows);
 
 	sem_init(&mutex, sm_0, 1); 
-	// printf("Matrix : \n");
-	// print_Matrix(SHARED[2], num_rows, num_columns);
-	// print_Vector(SHARED[1], num_rows);
-
-	// printf("\nSHARED : ");
-	// print_Vector(SHARED[0], num_columns);
-
+	start = omp_get_wtime();
 	for(size_t i = 0; i < num_processes; i++){
 		pid_t pid = fork();
 		
@@ -191,25 +173,9 @@ int* parallel_calc__columns_by_element_(int** data, unsigned num_rows, unsigned 
 			printf("Process wasn't created");
 		}else if( !pid ){
 			if( i+1 == num_processes ){
-				// printf("begin = %d ", scale_*i);
-				// printf("end = %d ", num_columns);
-				// printf("\nbefor : ");
-				// print_Vector(SHARED[0], num_rows);
-
 				mult_columns_by_element(SHARED, num_rows, num_columns, scale_*i, num_columns);
-
-				// printf("\nafter : ");
-				// print_Vector(SHARED[0], num_rows);
 			}else{
-				// printf("begin = %d ", scale_*i);
-				// printf("end = %d ", (i+1)*scale_);
-				// printf("\nbefor : ");
-				// print_Vector(SHARED[0], num_rows);
-
 				mult_columns_by_element(SHARED, num_rows, num_columns, scale_*i, scale_*(i+1));
-
-				// printf("\nafter : ");
-				// print_Vector(SHARED[0], num_rows);
 			}
 			exit(EXIT_SUCCESS);
 		}
@@ -220,6 +186,10 @@ int* parallel_calc__columns_by_element_(int** data, unsigned num_rows, unsigned 
 	shmctl(sm_0, IPC_RMID, NULL);
 	shmctl(sm_1, IPC_RMID, NULL);
 	shmctl(sm_2, IPC_RMID, NULL);
+
+	end = omp_get_wtime();
+	printf("diff time = %.16g\n", end - start);
+
 	return res_vector;
 }
 
@@ -231,7 +201,7 @@ int main(int argc, char const *argv[]){
 
 	// printf("This is parant: id = %i\n", getpid());
 	unsigned num_processes = 3;
-	unsigned rows = 25000, columns = 25000;
+	unsigned rows = 15000, columns = 15000;
 	if(argc > 1){
 		num_processes = atoi(argv[1]);
 	}
