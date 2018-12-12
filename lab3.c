@@ -130,21 +130,29 @@ int* parallel_calc__rows_by_vector_(int** data, unsigned num_rows, unsigned num_
 
 //****************************************************************************
 
-void multiple_1234(int* vec1, int* vec2, int el, int num_columns, unsigned size){
+int* multiple_1234(int* vec2, int el, int num_columns, unsigned size){
 	int i = 0;
+	int* tmp = malloc(size*sizeof(int));
 	for(; i < size; i++){
-		int a = *(vec2 + i*num_columns)*el;
-		sem_post(&mutex); //increment
-		vec1[i] += a;
-		sem_wait(&mutex); //decrement
+		tmp[i] += *(vec2 + i*num_columns)*el;
 	}
+	return tmp;
 }
 
-void mult_columns_by_element(int** SHARED, int num_rows, int num_columns, int range_begin, int range_end){
+void add_value(int* vec1, int* vec2, unsigned size){
+	int i = 0;
+	sem_post(&mutex); //increment
+	for(; i < size; i++){
+		vec1[i] += vec2[i];
+	}
+	sem_wait(&mutex); //decrement
+}
+
+void mult_columns_by_element(int** SHARED, unsigned num_rows, unsigned num_columns, int range_begin, int range_end){
 	int i = range_begin;
-	
 	for(; i < range_end; i++){
-		multiple_1234(SHARED[0], SHARED[2] +  i, SHARED[1][i], num_columns, num_rows);
+		
+		add_value(SHARED[0], multiple_1234(SHARED[2] +  i, SHARED[1][i], num_columns, num_rows), num_rows);
 	}
 	
 }
