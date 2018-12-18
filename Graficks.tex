@@ -1,0 +1,20 @@
+\usepackage{pgfplots}
+
+%Преамбула
+\documentclass{article}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
+
+%Содержимое документа
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[
+	title = Exponenta,
+	xlabel = {$x$},
+	ylabel = {$y$},
+	minor tick num = 2
+]
+\addplot[blue] {e^x};
+\end{axis}
+\end{tikzpicture}
+\end{document}

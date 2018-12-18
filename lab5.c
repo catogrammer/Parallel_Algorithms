@@ -5,7 +5,8 @@
 
 #include <omp.h>
 
-static long steps = 500000000;
+static long steps = 5000000000;
+// static long steps = 500000000;
 // static long steps = 50000000;
 // static long steps = 50000;
 
@@ -15,7 +16,7 @@ int main() {
 	int i,j;
     double x, tmp=0.0;
     double pi, sum = 0.0;
-    double start;
+    double start = 0, end = 0;
 
     step = 1.0/(double) steps;
 
@@ -24,15 +25,19 @@ int main() {
     scanf("%d", &choice);
     switch(choice){
         case 1:
+            start = omp_get_wtime();
             #pragma omp parallel for reduction(+:sum) private(x)
             for (i=0; i < steps; i++) {
                 x = (i+0.5)*step;
                 sum += 4.0 / (1.0+x*x); 
             }
             pi = step * sum;
+            end = omp_get_wtime();
             printf("PI = %.16g \n", pi);
+            printf("time: %f\n", end-start);
             break;
         case 2:
+            start = omp_get_wtime();
             #pragma omp parallel shared(sum) private(tmp)
             {
                 #pragma omp for private(x)
@@ -44,7 +49,9 @@ int main() {
                 sum += tmp;
             }
             pi = step * sum;
+            end = omp_get_wtime();
             printf("PI = %.16g \n", pi);
+            printf("time: %f\n", end-start);
             break;
         default:
             printf("Error choice!");
