@@ -91,16 +91,29 @@ int main(int argc, char const *argv[])
 		printf("\ndiff   PI = %.20Lf\n", diff);
 	}
 	
-	if( argc == 1 ){
+	if( argc == 2 ){
 
 		start = omp_get_wtime();
-		PI = prl_culc_PI(num_of_addend, num_of_process);
-		end = omp_get_wtime();
-		printf("diff time = %.16g\n", end - start);    
-		printf("define PI = %.20f\n", M_PI);
-		printf("\n       PI = %.20Lf\n", PI);
-		long double diff = M_PI-PI;
-		printf("\ndiff   PI = %.20Lf\n", diff);
+		// num_of_process = atoi(argv[1]);
+		// printf("num of proc = %d", num_of_process);
+		// PI = prl_culc_PI(num_of_addend, num_of_process);
+		// end = omp_get_wtime();
+		int i;
+	
+		for( i = 1; i < 21;i++){
+			num_of_process = i;
+			start = omp_get_wtime();
+			PI = prl_culc_PI(num_of_addend, num_of_process);
+			end = omp_get_wtime();
+			printf("diff time = %.16g\n", end - start);
+			long double diff = M_PI-PI;
+			printf("diff   PI = %.20Lf\n", diff);
+		}
+		// printf("diff time = %.16g\n", end - start);    
+		// printf("define PI = %.20f\n", M_PI);
+		// printf("\n       PI = %.20Lf\n", PI);
+		// long double diff = M_PI-PI;
+		// printf("diff   PI = %.20Lf\n", diff);
 
 	}else if( !strcmp(argv[1], "tofile") ){
 		fp = fopen("data.txt", "w");

@@ -3,6 +3,7 @@
 
 
 void qsort__(int* arr, int first, int last){
+    // printf("%p %d %d", arr, first, last);
     if (first < last){
         int left = first, right = last, middle = arr[(left + right) / 2];
         do {

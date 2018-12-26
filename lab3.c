@@ -92,7 +92,7 @@ int* parallel_calc__rows_by_vector_(int** data, unsigned num_rows, unsigned num_
 	int* res_vector;
 	int scale_ = num_rows/num_processes;
 	double start = 0, end = 0, diff_time = 0;
-	int *SHARED[3]; //[0] -result_vec, [1]-vector, [2]-matrix
+	int* SHARED[3]; //[0] -result_vec, [1]-vector, [2]-matrix
     int sm_0, sm_1, sm_2;
     sm_0 = shmget( IPC_PRIVATE, num_columns*sizeof(int), 0666 | IPC_CREAT | IPC_EXCL ); //result
 	sm_1 = shmget( IPC_PRIVATE, num_columns*sizeof(int), 0666 | IPC_CREAT | IPC_EXCL ); //vector
@@ -146,15 +146,14 @@ void add_value(int* vec1, int* vec2, unsigned size){
 		vec1[i] += vec2[i];
 	}
 	sem_wait(&mutex); //decrement
+	free(vec2);
 }
 
 void mult_columns_by_element(int** SHARED, unsigned num_rows, unsigned num_columns, int range_begin, int range_end){
 	int i = range_begin;
 	for(; i < range_end; i++){
-		
 		add_value(SHARED[0], multiple_1234(SHARED[2] +  i, SHARED[1][i], num_columns, num_rows), num_rows);
-	}
-	
+	}	
 }
 
 int* parallel_calc__columns_by_element_(int** data, unsigned num_rows, unsigned num_columns, unsigned num_processes){
@@ -195,6 +194,7 @@ int* parallel_calc__columns_by_element_(int** data, unsigned num_rows, unsigned 
 	shmctl(sm_1, IPC_RMID, NULL);
 	shmctl(sm_2, IPC_RMID, NULL);
 
+
 	end = omp_get_wtime();
 	printf("diff time = %.16g\n", end - start);
 
@@ -209,7 +209,7 @@ int main(int argc, char const *argv[]){
 
 	// printf("This is parant: id = %i\n", getpid());
 	unsigned num_processes = 3;
-	unsigned rows = 15000, columns = 15000;
+	unsigned rows = 1000, columns = 1000; //15000
 	if(argc > 1){
 		num_processes = atoi(argv[1]);
 	}
@@ -217,26 +217,38 @@ int main(int argc, char const *argv[]){
 	int** data = generate_data(rows, columns);
 	int* matrix = data[0];
 	int* vector = data[1];
+	printf("END OF GENERATION DATA\n");
 	// print_Matrix(matrix, rows, columns);
 	// print_Vector(vector, columns);
 	int* result;
-	int choice = 0;
+	int choice = 0, i;
 	menu();
 	printf("Enter your choice : ");
 	scanf("%d", &choice);
 	switch(choice){
 		case 1:
-			result = parallel_calc__rows_by_vector_(data, rows, columns, num_processes);
-			// printf("Multiplay rows by vector     : ");
-			// print_Vector(result, rows);
+			for(i = 1; i < 5; i++){
+				num_processes = i;
+				printf("num of proc : %i\n", num_processes);
+				result = parallel_calc__rows_by_vector_(data, rows, columns, num_processes);
+				// printf("COOL!");
+			}
 			printf("End calc rows by vector!");
 			break;
 		case 2: 
-			result = parallel_calc__columns_by_element_(data, rows, columns, num_processes);
+			for(i = 1; i < 21; i++){
+				num_processes = i;
+				printf("num of proc : %i\n", num_processes);
+				result = parallel_calc__columns_by_element_(data, rows, columns, num_processes);
+			}
 			// printf("Multiplay columns by element : ");
 			// print_Vector(result, rows);
 			printf("End calc columns by element!");
 	}
+
+	free(data[0]);
+	free(data[1]);
+	free(data);
 	
     return 0;
 }
