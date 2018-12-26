@@ -1,0 +1,298 @@
+Lab2: ( num_of_addend = 100000000 )
+
+diff time = 1.125663933000396
+diff   PI = 0.00000000999999887823
+diff time = 0.5655337469997903
+diff   PI = 0.00000000999999949926
+diff time = 0.6057263180000518
+diff   PI = 0.00000000999999961331
+diff time = 0.5599230780007929
+diff   PI = 0.00000000999999971870
+diff time = 0.5766668119995302
+diff   PI = 0.00000000999999967381
+diff time = 0.5638591950000773
+diff   PI = 0.00000000999999983081
+diff time = 0.5766169359994819
+diff   PI = 0.00000000999999990952
+diff time = 0.5614411139995354
+diff   PI = 0.00000000999999982257
+diff time = 0.5620099329998993
+diff   PI = 0.00000000999999985748
+diff time = 0.5736308189998454
+diff   PI = 0.00000000999999986160
+diff time = 0.5776107609999599
+diff   PI = 0.00000000999999981931
+diff time = 0.5691058160000466
+diff   PI = 0.00000000999999979481
+diff time = 0.5703217830005087
+diff   PI = 0.00000000999999978549
+diff time = 0.5624303300000975
+diff   PI = 0.00000000999999978549
+diff time = 0.5703385590004473
+diff   PI = 0.00000000999999984750
+diff time = 0.566866416999801
+diff   PI = 0.00000000999999985618
+diff time = 0.603368653999496
+diff   PI = 0.00000000999999982885
+diff time = 0.6249070989997563
+diff   PI = 0.00000000999999973995
+diff time = 0.5732977879997634
+diff   PI = 0.00000000999999971696
+diff time = 0.5640536799992333
+diff   PI = 0.00000000999999974168
+
+
+Lab3: (matrix 6000x6000)
+
+Rows by vector 
+
+num of proc : 1
+diff time = 0.133739446000618
+num of proc : 2
+diff time = 0.07227476800107979
+num of proc : 3
+diff time = 0.07686912800090795
+num of proc : 4
+diff time = 0.06438537699978042
+num of proc : 5
+diff time = 0.06671746199936024
+num of proc : 6
+diff time = 0.06999787499989907
+num of proc : 7
+diff time = 0.06579744000009669
+num of proc : 8
+diff time = 0.06701722200159566
+num of proc : 9
+diff time = 0.0679217940014496
+num of proc : 10
+diff time = 0.06916933600041375
+num of proc : 11
+diff time = 0.07221208999908413
+num of proc : 12
+diff time = 0.06925113699981011
+num of proc : 13
+diff time = 0.06843091300106607
+num of proc : 14
+diff time = 0.07112717899872223
+num of proc : 15
+diff time = 0.07595534799838788
+num of proc : 16
+diff time = 0.08702550799898745
+num of proc : 17
+diff time = 0.07315523899887921
+num of proc : 18
+diff time = 0.08271197399881203
+num of proc : 19
+diff time = 0.09589687200059416
+num of proc : 20
+diff time = 0.08608725200065237
+
+
+Columns by element
+
+num of proc : 1
+diff time = 0.4487008189989865
+num of proc : 2
+diff time = 0.2610611340005562
+num of proc : 3
+diff time = 0.2704988240002422
+num of proc : 4
+diff time = 0.2969276960011484
+num of proc : 5
+diff time = 0.2990639510007895
+num of proc : 6
+diff time = 0.367205708000256
+num of proc : 7
+diff time = 0.3485325890014792
+num of proc : 8
+diff time = 0.3391106239996589
+num of proc : 9
+diff time = 0.3128063230014959
+num of proc : 10
+diff time = 0.3458248169990839
+num of proc : 11
+diff time = 0.3268232079990412
+num of proc : 12
+diff time = 0.3400666440011264
+num of proc : 13
+diff time = 0.335894849999022
+num of proc : 14
+diff time = 0.3343065210010536
+num of proc : 15
+diff time = 0.4105590119997942
+num of proc : 16
+diff time = 0.3481333809995704
+num of proc : 17
+diff time = 0.3839045290005743
+num of proc : 18
+diff time = 0.4323800490001304
+num of proc : 19
+diff time = 0.3575497870006075
+num of proc : 20
+diff time = 0.3734931190010684
+
+lab 4:
+
+size arrr : 100000000
+my_qsort time = 11.98328225000296
+std_qsort time = 4.560735659000784
+prll_qsort time = 4.4336887319987
+size arrr : 16666666
+my_qsort time = 1.319585532997735
+std_qsort time = 0.7711194920011621
+prll_qsort time = 0.694542528999591
+size arrr : 2777777
+my_qsort time = 0.185345084999426
+std_qsort time = 0.1107601369985787
+prll_qsort time = 0.1246983139972144
+size arrr : 462962
+my_qsort time = 0.03059257700078888
+std_qsort time = 0.01717657400149619
+prll_qsort time = 0.02486514699921827
+size arrr : 77160
+my_qsort time = 0.004226534998451825
+std_qsort time = 0.00235453400091501
+prll_qsort time = 0.01429533699774765
+size arrr : 12860
+my_qsort time = 0.0006144030012364965
+std_qsort time = 0.000367685999663081
+prll_qsort time = 0.01289957199696801
+size arrr : 2143
+my_qsort time = 0.0001012499997159466
+std_qsort time = 8.841599992592819e-05
+prll_qsort time = 0.01241706699875067
+size arrr : 357
+my_qsort time = 3.208699854440056e-05
+std_qsort time = 1.307800266658887e-05
+prll_qsort time = 0.01276661600059015
+
+
+
+lab 5:
+
+with reduction
+
+threads = 1
+PI = 3.141592653589814 
+time: 7.834637
+threads = 2
+PI = 3.14159265358977 
+time: 4.000725
+threads = 3
+PI = 3.141592653589911 
+time: 2.717907
+threads = 4
+PI = 3.141592653589861 
+time: 2.079618
+threads = 5
+PI = 3.141592653589826 
+time: 2.141047
+threads = 6
+PI = 3.14159265358964 
+time: 2.128640
+threads = 7
+PI = 3.141592653589851 
+time: 2.165405
+threads = 8
+PI = 3.141592653589968 
+time: 2.096454
+threads = 9
+PI = 3.14159265358979 
+time: 2.138686
+threads = 10
+PI = 3.141592653589968 
+time: 2.089548
+threads = 11
+PI = 3.141592653589803 
+time: 2.102760
+threads = 12
+PI = 3.141592653589798 
+time: 2.088641
+threads = 13
+PI = 3.141592653589928 
+time: 2.093704
+threads = 14
+PI = 3.1415926535898 
+time: 2.089845
+threads = 15
+PI = 3.141592653589767 
+time: 2.092374
+threads = 16
+PI = 3.141592653589879 
+time: 2.096623
+threads = 17
+PI = 3.141592653589855 
+time: 2.088670
+threads = 18
+PI = 3.14159265358981 
+time: 2.092022
+threads = 19
+PI = 3.141592653589861 
+time: 2.095533
+threads = 20
+PI = 3.141592653589929 
+time: 2.091930
+
+without reduction:
+
+threads = 1
+PI = 3.141592653589861 
+time: 2.246680
+threads = 2
+PI = 3.141592653589861 
+time: 2.103825
+threads = 3
+PI = 3.141592653589861 
+time: 2.091016
+threads = 4
+PI = 3.141592653589861 
+time: 2.092009
+threads = 5
+PI = 3.141592653589861 
+time: 2.105049
+threads = 6
+PI = 3.141592653589861 
+time: 2.092019
+threads = 7
+PI = 3.141592653589861 
+time: 2.137553
+threads = 8
+PI = 3.141592653589861 
+time: 2.156876
+threads = 9
+PI = 3.141592653589861 
+time: 2.106585
+threads = 10
+PI = 3.141592653589861 
+time: 2.094502
+threads = 11
+PI = 3.141592653589861 
+time: 2.088135
+threads = 12
+PI = 3.141592653589861 
+time: 2.087028
+threads = 13
+PI = 3.141592653589861 
+time: 2.152354
+threads = 14
+PI = 3.141592653589861 
+time: 2.080261
+threads = 15
+PI = 3.141592653589861 
+time: 2.135464
+threads = 16
+PI = 3.141592653589861 
+time: 2.131965
+threads = 17
+PI = 3.141592653589861 
+time: 2.089869
+threads = 18
+PI = 3.141592653589861 
+time: 2.112591
+threads = 19
+PI = 3.141592653589861 
+time: 2.083599
+threads = 20
+PI = 3.141592653589861 
+time: 2.106040
+
