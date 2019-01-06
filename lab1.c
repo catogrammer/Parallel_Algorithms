@@ -100,9 +100,9 @@ void task3 (){
 
 int main (){
 	printf("root process: %d\n", getpid());
-	task1();
+	// task1();
 	// task2();
-	// task3();
+	task3();
 	
 	return 0;
 }
